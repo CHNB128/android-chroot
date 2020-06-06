@@ -1,0 +1,53 @@
+#!/bin/sh
+
+USER=root
+ROOT=/data/arch
+SDCARD=$ROOT/home/sdcard
+SHELL=$2
+
+if [ -z "$SHELL" ]; then
+  SHELL=/bin/bash
+fi
+
+setup () {
+  mkdir -p $SDCARD
+  echo 'nameserver 1.1.1.1' > $ROOT/etc/resolv.conf
+}
+
+mount () {
+  busybox mount -o rbind /dev $ROOT/dev
+  busybox mount -t proc none $ROOT/proc
+  busybox mount -t sysfs none $ROOT/sys
+  busybox mount -t tmpfs none $ROOT/tmp
+  busybox mount --bind /sdcard $SDCARD
+}
+
+unmount () {
+  busybox unmount $ROOT/dev
+  busybox unmount $ROOT/proc
+  busybox unmount $ROOT/sys
+  busybox unmount $ROOT/tmp
+}
+
+run () {
+  chroot $ROOT $SHELL -c "source /etc/profile; export HOME=/home/${USER}; export TERM=xterm-256color; clear; su - ${USER}"
+}
+
+help () {
+  echo "USAGE: init [mount. unmount, run, help]"
+}
+
+case $1 in
+  'mount')
+    setup
+    mount
+    ;;
+  'unmount')
+    unmount
+    ;;
+  'run')
+    ;;
+  *)
+    help
+    ;;
+esac;
