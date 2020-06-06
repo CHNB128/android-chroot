@@ -17,3 +17,12 @@ Edit variables on top of `init` script, to fitt you environment
 If no argumets provide, help will be shown.
 Can specifi shell as last argument to run in chroot
 
+## Tips
+
+### Default shell as chroot
+
+You can put this as shell to any terminal to start directly from chroot
+
+```
+/path/to/init run /bin/bash
+```
